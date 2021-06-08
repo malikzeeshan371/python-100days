@@ -1,68 +1,49 @@
-from turtle import Turtle, Screen
-import random
-is_race_on = False
+from turtle import Screen
+from paddle import Paddle
+from ball import Ball
+import time
+from scoreboard import Scoreboard
+
 screen = Screen()
-# setting up the screen height and width
-screen.setup(width=500, height=400)
+screen.bgcolor("black")
+screen.setup(width=800, height=600)
+screen.title("The Pong")
+screen.tracer(0)
 
-# taking the bet at the beggining of the race
-user_bet = screen.textinput(title="Make your bet", prompt="which turtle will win the race")
-# print(user_bet)
-colors = ["red", "green", "blue", "yellow", "purple", "orange"]
-y_position = [-70, -40, -10, 20, 50, 80]
-all_turtles = []
+r_paddle = Paddle((370, 0))
+l_paddle = Paddle((-380, 0))
+ball = Ball()
+scoreboard = Scoreboard()
 
-# to create different turtle at different coordinance with different color
-for turtle_index in range(0, 5):
-    new_turtle = Turtle(shape="turtle")
-    new_turtle.speed(1)
-    new_turtle.color(colors[turtle_index])
-    new_turtle.penup()
-    new_turtle.goto(x=-235, y=y_position[turtle_index])
-    all_turtles.append(new_turtle)
-# starting the race
-if user_bet:
-    is_race_on = True
-# creating the loop to run the race
-while is_race_on:
-    # ending the race
-    for turtle in all_turtles:
-        if turtle.xcor() > 230:
-            is_race_on = False
-            # selecting the winner
-            winning_color = turtle.pencolor()
-            if winning_color == user_bet:
-                print(f"You've WON! The {winning_color} turtle is the winner!")
-            else:
-                print(f"You've LOST! The {winning_color} turtle is the winner!")
-        # creating the random movement for different turtles
-        rand_distance = random.randint(0, 10)
-        turtle.forward(rand_distance)
+screen.listen()
+screen.onkey(r_paddle.go_up, "Up")
+screen.onkey(r_paddle.go_down, "Down")
+screen.onkey(l_paddle.go_up, "w")
+screen.onkey(l_paddle.go_down, "s")
 
+game_is_on = True
+while game_is_on:
+    time.sleep(ball.move_speed)
+    screen.update()
+    ball.move()
 
+    # Detecting the collision with the wall
+    if ball.ycor() > 275 or ball.ycor() < -275:
+        ball.bounce_y()
 
+    # Detect collision with both paddle
+    if ball.distance(r_paddle) < 50 and ball.xcor() > 340 or ball.distance(l_paddle) < 50 and ball.xcor() < -340:
+        ball.bounce_x()
 
+    # Detect if right paddle misses
+    if ball.xcor() > 380:
+        ball.reset_position()
+        scoreboard.l_point()
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    # Detect if left paddle misses
+    if ball.xcor() < -380:
+        ball.reset_position()
+        scoreboard.r_point()
 
 
 screen.exitonclick()
