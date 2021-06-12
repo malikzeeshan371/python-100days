@@ -1,37 +1,13 @@
-import turtle
 import pandas
 
-screen = turtle.Screen()
-screen.title("U.S. States Game")
-image = "blank_states_img.gif"
-screen.addshape(image)
-turtle.shape(image)
+phonetic_data = pandas.read_csv("nato_phonetic_alphabet.csv")
+# Create a dictionary in this format:
+# {"A": "Alfa", "B": "Bravo"}
+# using dict comprehension method
+phonetic_dict = {row.letter: row.code for (index, row) in phonetic_data.iterrows()}
+# print(phonetic_dict)
 
-data = pandas.read_csv("50_states.csv")
-all_states = data.state.to_list()
-guessed_states = []
-# print(all_states)
-
-while len(guessed_states) < 50:
-    answer_state = screen.textinput(title=f"{len(guessed_states)}/50 states correct",
-                                    prompt="What's another state's name ?").title()
-    if answer_state == "Exit":
-        missing_states = []
-        for state in all_states:
-            missing_states.append(state)
-        new_data = pandas.DataFrame(missing_states)
-        new_data.to_csv("states_to_learn.csv")
-        break
-
-    if answer_state in all_states:
-        guessed_states.append(answer_state)
-        t = turtle.Turtle()
-        t.hideturtle()
-        t.penup()
-        state_data = data[data.state == answer_state]
-        x = int(state_data.x)
-        y = int(state_data.y)
-        t.goto(x, y)
-        t.write(answer_state)
-
-# states_to_learn()
+# Create a list of the phonetic code words from a word that the user inputs.
+word = input("Enter a word:").upper()
+output_list = [phonetic_dict[letter] for letter in word]
+print(output_list)
