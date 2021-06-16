@@ -1,0 +1,4 @@
+amazon | sumonchhetry@email.com | sumon
+flipkart | sumonchhetry@email.com | sumon
+google | sumonchhetry@email.com | sumon
+amazon | sumonchhetry@email.com | 1234
